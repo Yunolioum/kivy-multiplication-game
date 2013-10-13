@@ -4,7 +4,14 @@ import time
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.textinput import TextInput
+from kivy.uix.button import Button
 from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+
+class Numpad(Widget):
+    pass
+
+class NumButton(Button):
+    pass
 
 class SuccessDependantGraphics(Widget):
     time_to_solve = StringProperty('')
@@ -67,6 +74,8 @@ class GameBoard(Widget):
     
     correct_answer = 0
     
+    current_guess = StringProperty('')
+    
     input = ObjectProperty(None)
     new_game_button = ObjectProperty(None)
     
@@ -82,7 +91,11 @@ class GameBoard(Widget):
                 on_press=self.on_new_game_button_clicked)
     
     def on_text(self, instance, text):
-        if text == str(self.correct_answer):
+        self.current_guess = text
+        self.on_guess()
+    
+    def on_guess(self):
+        if self.current_guess == str(self.correct_answer):
             self.on_success()
         else:
             self.on_fail()

@@ -1,45 +1,69 @@
 #:kivy 1.7.2
-            
+
 <GameBoard>:
     input: answer
     operand_center_y: root.top - 85
+    pencil_font: 'fonts/Scratch.ttf'
     
     success_dependant_graphics: time_and_again_button
-    
-    canvas:
-        Ellipse:
-            id: multiplication_operator
-            pos: self.center_x - 5, root.top - 85
-            size: 10, 10
             
     Label:
         id: operand_left
         font_size: 70  
         center_x: root.width / 2 - root.width / 10
         center_y: root.operand_center_y
+        font_name: root.pencil_font
+        halign: 'right'
         text: str(root.operand1)
+    
+    Label:
+        id: operator
+        font_size: 70
+        center_x: root.width / 2
+        center_y: root.operand_center_y
+        font_name: root.pencil_font
+        halign: 'center'
+        text: '∙'
         
     Label:
         id: operand_right
         font_size: 70  
         center_x: root.width / 2 + root.width / 10
         center_y: root.operand_center_y
+        font_name: root.pencil_font
+        halign: 'left'
         text: str(root.operand2)
         
     NumericTextInput:
         id: answer
         height: 100
         width: 400
+        font_name: root.pencil_font
         font_size: 50
         center_x: root.center_x
-        center_y: root.center_y
+        center_y: -1 * (root.center_y + root.height / 16 * 3)
         multiline: False
         readonly: root.input_is_correct
+        
+    Label:
+        id: answer_presentation
+        height: 100
+        width: 400
+        halign: 'center'
+        font_name: root.pencil_font
+        font_size: 40
+        center_x: root.center_x
+        center_y: root.center_y + root.height / 16 * 3
+        text: str(root.current_guess)
     
     SuccessDependantGraphics:
         id: time_and_again_button
+        x: 0.8 * root.width
+        center_y: self.position_y_multiplier * (root.center_y + root.height / 4)
+        
+    Numpad:
+        top: 0.6 * root.height
         center_x: root.center_x
-        center_y: self.position_y_multiplier * root.center_y - root.height / 4
         
 <SuccessDependantGraphics>:
     new_game_button: button
@@ -57,3 +81,90 @@
         center_x: root.center_x
         center_y: root.center_y - root.height / 8 * 3
         font_size: 20
+
+<Numpad>:
+    num_width: 80
+    num_height: 80
+    
+    n_cols: 3
+    n_rows: 4
+    
+    width: self.num_width * self.n_cols
+    height: self.num_height * self.n_rows
+    
+    NumButton:
+        x: root.x
+        top: root.top
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_1
+        text: '1'
+    NumButton:
+        x: root.x + root.width / root.n_cols
+        top: root.top
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_2
+        text: '2'
+    NumButton:
+        x: root.x + root.width / root.n_cols * 2
+        top: root.top
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_3
+        text: '3'
+    NumButton:
+        x: root.x
+        top: root.top - root.height / root.n_rows 
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_4
+        text: '4'
+    NumButton:
+        x: root.x + root.width / root.n_cols
+        top: root.top - root.height / root.n_rows
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_5
+        text: '5'
+    NumButton:
+        x: root.x + root.width / root.n_cols * 2
+        top: root.top - root.height / root.n_rows
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_6
+        text: '6'
+    NumButton:
+        x: root.x
+        top: root.top - root.height / root.n_rows * 2
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_7
+        text: '7'
+    NumButton:
+        x: root.x + root.width / root.n_cols
+        top: root.top - root.height / root.n_rows * 2
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_8
+        text: '8'
+    NumButton:
+        x: root.x + root.width / root.n_cols * 2
+        top: root.top - root.height / root.n_rows * 2
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_9
+        text: '9'
+    NumButton:
+        x: root.x + root.width / root.n_cols
+        top: root.top - root.height / root.n_rows * 3
+        width: root.width / root.n_cols
+        height: root.height / root.n_rows
+        id: num_0
+        text: '0'
+            
+<NumButton>:
+    font_name: 'fonts/Scratch.ttf'
+    font_size: 60
+    halign: 'center'
+    size_hint: (None, None)
