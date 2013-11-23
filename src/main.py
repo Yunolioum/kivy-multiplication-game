@@ -6,6 +6,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+from kivy.uix.screenmanager import Screen, ScreenManager
 
 class Numpad(Widget):
     def __init__(self, **kwargs):
@@ -66,7 +67,7 @@ class NumericTextInput(TextInput):
     
     def __init__(self, **kwargs):
         super(NumericTextInput, self).__init__(**kwargs)
-        self.register_event_type('on_enter')
+        self.register_event_type('on_enter_key')
         self.register_event_type('on_new_number')
         self.register_event_type('on_erase_number')
     
@@ -79,17 +80,17 @@ class NumericTextInput(TextInput):
         elif key_str == 'backspace':
             self.dispatch('on_erase_number')
         elif key_str == 'enter':
-            self.dispatch('on_enter')
+            self.dispatch('on_enter_key')
             pass
             
-    def on_enter(self):
+    def on_enter_key(self):
         pass
     def on_new_number(self, number):
         pass
     def on_erase_number(self):
         pass
 
-class GameBoard(Widget):
+class GameBoard(Screen):
     operand1 = NumericProperty(0)
     operand2 = NumericProperty(0)
     
@@ -114,7 +115,10 @@ class GameBoard(Widget):
         self.numpad.bind(on_erase_number=self.on_erase_number)
         self.input.bind(on_new_number=self.on_appended_number)
         self.input.bind(on_erase_number=self.on_erase_number)
-        self.input.bind(on_enter=self.on_enter)
+        self.input.bind(on_enter=self.on_enter_key)
+        
+    def on_pre_enter(self):
+        self.new_game()
         
     @property
     def current_guess(self):
@@ -154,7 +158,7 @@ class GameBoard(Widget):
     def on_fail(self):
         self.input_is_correct = False
         
-    def on_enter(self, instance):
+    def on_enter_key(self, instance):
         if self.input_is_correct:
             self.new_game()
     
@@ -174,10 +178,12 @@ class GameBoard(Widget):
         self.input.focus = True
         
 class MultiplicationGameApp(App):
+    NUMBER_OF_GAMES = 5
     def build(self):
-        game_board = GameBoard()
-        game_board.new_game()
-        return game_board
+        screens = ScreenManager()
+        for i in range(1, self.NUMBER_OF_GAMES):
+            screens.add_widget(GameBoard(name='Game %d' % i))
+        return screens
 
 if __name__ == '__main__':
     MultiplicationGameApp().run()
