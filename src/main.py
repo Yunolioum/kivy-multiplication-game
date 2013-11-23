@@ -2,12 +2,12 @@ from random import randint
 import time
 
 from kivy.app import App
-from kivy.uix.widget import Widget
 from kivy.uix.textinput import TextInput
 from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.boxlayout import BoxLayout
 
-class SuccessDependantGraphics(Widget):
+class SuccessDependantGraphics(BoxLayout):
     time_to_solve = StringProperty('')
     position_y_multiplier = NumericProperty(-1)
     

@@ -12,7 +12,11 @@
     
     SuccessDependantGraphics:
         id: time_and_again_button
-        center_y: self.position_y_multiplier * (root.center_y + root.height / 4)
+        width: 100
+        height: 140
+        size_hint: (None, None)
+        center_y: self.position_y_multiplier * (root.height - self.height / 2)
+        right: root.right - 50
         
     NumericTextInput:
         id: answer
@@ -149,6 +153,7 @@
             
 <SuccessDependantGraphics>:
     new_game_button: button
+    orientation: 'vertical'
     
     Label:
         id: time_to_solve_label
@@ -156,6 +161,7 @@
         center_x: root.center_x
         center_y: root.center_y + root.height / 4
         text: root.time_to_solve
+        size_hint: (1, 1)
         
     Button:
         id: button
@@ -163,6 +169,8 @@
         center_x: root.center_x
         center_y: root.center_y - root.height / 8 * 3
         font_size: 20
+        height: 100
+        size_hint: (1, None)
         
 <NumButton@Button>:
     font_name: 'fonts/Scratch.ttf'
