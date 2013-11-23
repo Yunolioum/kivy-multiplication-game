@@ -1,75 +1,163 @@
 #:kivy 1.7.2
 
 <GameBoard>:
-    input: answer
-    operand_center_y: root.top - 85
-    pencil_font: 'fonts/Scratch.ttf'
+    width: 500
+    height: 500
     
     success_dependant_graphics: time_and_again_button
+    input: answer
     
-    numpad: number_buttons
-            
-    Label:
-        id: operand_left
-        font_size: 70  
-        center_x: root.width / 2 - root.width / 10
-        center_y: root.operand_center_y
-        font_name: root.pencil_font
-        halign: 'right'
-        text: str(root.operand1)
+    numpad: content_box.number_buttons
+    equation_widget: content_box.equation
     
-    Label:
-        id: operator
-        font_size: 70
-        center_x: root.width / 2
-        center_y: root.operand_center_y
-        font_name: root.pencil_font
-        halign: 'center'
-        text: '∙'
-        
-    Label:
-        id: operand_right
-        font_size: 70  
-        center_x: root.width / 2 + root.width / 10
-        center_y: root.operand_center_y
-        font_name: root.pencil_font
-        halign: 'left'
-        text: str(root.operand2)
+    SuccessDependantGraphics:
+        id: time_and_again_button
+        width: 100
+        height: 140
+        size_hint: (None, None)
+        center_y: self.position_y_multiplier * (root.height - self.height / 2)
+        right: root.right - 50
         
     NumericTextInput:
         id: answer
         height: 100
         width: 400
-        font_name: root.pencil_font
+        font_name: app.default_font_name
         font_size: 50
         center_x: root.center_x
         center_y: -1 * (root.center_y + root.height / 16 * 3)
         multiline: False
         readonly: root.input_is_correct
-        
-    Label:
-        id: answer_presentation
-        height: 100
-        width: 400
-        halign: 'center'
-        font_name: root.pencil_font
-        font_size: 40
-        center_x: root.center_x
-        center_y: root.center_y + root.height / 16 * 3
-        text: str(root._current_guess)
     
-    SuccessDependantGraphics:
-        id: time_and_again_button
-        x: 0.8 * root.width
-        center_y: self.position_y_multiplier * (root.center_y + root.height / 4)
+    BoxLayout:
+        id: content_box
+        orientation: 'vertical'
         
-    Numpad:
-        id: number_buttons
-        top: 0.6 * root.height
-        center_x: root.center_x
+        equation: equation
+        answer_presentation: answer_presentation
+        number_buttons: number_buttons
         
+        GridLayout: 
+            id: equation
+            height: 200
+            size_hint: (1, .2)
+            operand1: operand_left
+            operand2: operand_right
+            operator: operator
+            cols: 5
+            
+            Label:
+                id: empty_left
+                size_hint: (1, 1)
+                
+            Label:
+                id: operand_left
+                width: 100
+                height: 100
+                size_hint: (None, 1)
+                font_size: 70
+                font_name: app.default_font_name
+                halign: 'right'
+                text: str(app.randomize_operand())
+            
+            Label:
+                id: operator
+                size_hint: (None, 1)
+                width: 20
+                height: 20
+                font_size: 70
+                font_name: app.default_font_name
+                halign: 'center'
+                text: '∙'
+                
+            Label:
+                id: operand_right
+                size_hint: (None, 1)
+                width: 100
+                height: 100
+                font_size: 70
+                font_name: app.default_font_name
+                halign: 'left'
+                text: str(app.randomize_operand())
+                
+            Label:
+                id: empty_right
+                size_hint: (1, 1)
+            
+        Label:
+            id: answer_presentation
+            height: 100
+            size_hint: (1, None)
+            font_name: app.default_font_name
+            font_size: 40
+            text: str(root._current_guess)
+            
+        BoxLayout:
+            number_buttons: number_buttons
+            Label:
+                id: empty_left
+                size_hint: (0.5, 1)
+                
+            GridLayout:
+                id: number_buttons
+                size_hint: (None, None)
+                width: 300
+                height: 400
+                        
+                cols: 3
+                
+                NumButton:
+                    id: num_1
+                    text: '1'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_2
+                    text: '2'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_3
+                    text: '3'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_4
+                    text: '4'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_5
+                    text: '5'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_6
+                    text: '6'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_7
+                    text: '7'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_8
+                    text: '8'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_9
+                    text: '9'
+                    on_press: root.numbutton_pressed(self, self.text)
+                Label:
+                    id: num_empty_0
+                NumButton:
+                    id: num_0
+                    text: '0'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: erase
+                    text: 'X'
+                    on_press: root.erase_pressed(self)
+            Label:
+                id: empty_right
+                size_hint: (0.5, 1)
+            
 <SuccessDependantGraphics>:
-    new_game_button: button
+    orientation: 'vertical'
     
     Label:
         id: time_to_solve_label
@@ -77,6 +165,7 @@
         center_x: root.center_x
         center_y: root.center_y + root.height / 4
         text: root.time_to_solve
+        size_hint: (1, 1)
         
     Button:
         id: button
@@ -84,121 +173,14 @@
         center_x: root.center_x
         center_y: root.center_y - root.height / 8 * 3
         font_size: 20
-
-<Numpad>:
-    num_width: 80
-    num_height: 80
-    
-    n_cols: 3
-    n_rows: 4
-    
-    width: self.num_width * self.n_cols
-    height: self.num_height * self.n_rows
-    
-    NumButton:
-        x: root.x
-        top: root.top
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_1
-        text: '1'
-        on_press: root.numbutton_pressed(self, self.text)
+        height: 100
+        size_hint: (1, None)
+        on_press: app.next_game()
         
-    NumButton:
-        x: root.x + root.width / root.n_cols
-        top: root.top
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_2
-        text: '2'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x + root.width / root.n_cols * 2
-        top: root.top
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_3
-        text: '3'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x
-        top: root.top - root.height / root.n_rows 
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_4
-        text: '4'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x + root.width / root.n_cols
-        top: root.top - root.height / root.n_rows
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_5
-        text: '5'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x + root.width / root.n_cols * 2
-        top: root.top - root.height / root.n_rows
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_6
-        text: '6'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x
-        top: root.top - root.height / root.n_rows * 2
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_7
-        text: '7'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x + root.width / root.n_cols
-        top: root.top - root.height / root.n_rows * 2
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_8
-        text: '8'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x + root.width / root.n_cols * 2
-        top: root.top - root.height / root.n_rows * 2
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_9
-        text: '9'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x + root.width / root.n_cols
-        top: root.top - root.height / root.n_rows * 3
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: num_0
-        text: '0'
-        on_press: root.numbutton_pressed(self, self.text)
-        
-    NumButton:
-        x: root.x + root.width / root.n_cols * 2
-        top: root.top - root.height / root.n_rows * 3
-        width: root.width / root.n_cols
-        height: root.height / root.n_rows
-        id: erase
-        text: 'X'
-        on_press: root.erase_pressed(self)
-        
-            
-<NumButton>:
+<NumButton@Button>:
     font_name: 'fonts/Scratch.ttf'
     font_size: 60
     background_normal: 'images/button-normal-black.png'
     background_down: 'images/button-pressed-black.png'
     halign: 'center'
-    size_hint: (None, None)
+    size_hint: (1, 1)
