@@ -43,6 +43,7 @@
             size_hint: (1, .2)
             operand1: operand_left
             operand2: operand_right
+            operator: operator
             cols: 5
             
             Label:
@@ -179,3 +180,43 @@
     background_down: 'images/button-pressed-black.png'
     halign: 'center'
     size_hint: (None, None)
+
+<GameResults>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 0, 0.3 #yellow
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: 'horizontal'
+    size_hint: (1, 0.1)
+    Label:
+        id: empty_left
+        size_hint: (0.4, None)
+    Label:
+        id: equation
+        width: 100
+        height: 50
+        halign: 'right'
+        size_hint: (0.1, None)
+        font_name: app.default_font_name
+        text: root.equation_label
+    Label:
+        id: separator
+        height: 50
+        width: 30
+        halign: 'center'
+        size_hint: (0.06, None)
+        font_name: app.default_font_name
+        text: ':'
+    Label:
+        id: time
+        width: 100
+        height: 50
+        halign: 'left'
+        size_hint: (0.1, None)
+        font_name: app.default_font_name
+        text: root.time_label
+    Label:
+        size_hint: (0.4, None)
+        id: empty_right

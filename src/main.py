@@ -6,6 +6,9 @@ from kivy.uix.textinput import TextInput
 from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.scrollview import ScrollView
+from kivy.uix.stacklayout import StackLayout
 
 class SuccessDependantGraphics(BoxLayout):
     time_to_solve = StringProperty('')
@@ -157,11 +160,36 @@ class GameBoard(Screen):
 
         self.input.focus = True
         
+class ResultsScreen(Screen):
+    def __init__(self, content, **kwargs):
+        super(ResultsScreen, self).__init__(**kwargs)
+        self.add_widget(content)
+      
+class ResultsLabel(Label):
+    def __init__(self, **kwargs):
+        super(ResultsLabel, self).__init__(font_name=MultiplicationGameApp.FONT_NAME, height=50, **kwargs)
+            
+class GameResult(BoxLayout):
+    def __init__(self, game_board, **kwargs):
+        super(GameResult, self).__init__(**kwargs)
+        equation_label = (
+                game_board.equation_widget.operand1.text + " " +
+                game_board.equation_widget.operator.text + " " +
+                game_board.equation_widget.operand2.text + " " +
+                "= " + game_board.current_guess)
+        time_label = game_board.success_dependant_graphics.time_to_solve + 's'
+        self.add_widget(ResultsLabel(size_hint=(0.5, None)))
+        self.add_widget(ResultsLabel(text=equation_label, size_hint=(None, 1), width=150))
+        self.add_widget(ResultsLabel(text=':', size_hint=(None, 1), width=10))
+        self.add_widget(ResultsLabel(text=time_label, size_hint=(None, 1), width=150))
+        self.add_widget(ResultsLabel(size_hint=(0.5, None)))
+        
 class MultiplicationGameApp(App):
-    NUMBER_OF_GAMES = 5
+    NUMBER_OF_GAMES = 2
     OPERAND_MAX = 12
     OPERAND_MIN = 1
     FONT_NAME = 'fonts/Scratch.ttf'
+    finished_screens = []
     
     def randomize_operand(self):
         return randint(self.OPERAND_MIN, self.OPERAND_MAX)
@@ -170,7 +198,37 @@ class MultiplicationGameApp(App):
         if not self.screens.current_screen.input_is_correct:
             raise RuntimeError("Tried to start a new game with an incorrect answer")
         else:
-            self.screens.current = self.screens.next()
+            if len(self.screens.screens) > 1:
+                self.save_result()
+                self.go_to_next_screen()
+            elif isinstance(self.screens.current_screen, GameBoard):
+                self.save_result()
+                self.add_results_screen()
+                self.go_to_next_screen()
+            else:
+                raise Exception("Tried to save the results of the last game. Expected a 'GameBoard', but got a '%s'." %
+                                (type(self.screens.current_screen)))
+    
+    def save_result(self):
+        self.finished_screens.append(self.screens.current_screen)
+        
+    def go_to_next_screen(self):
+        self.screens.remove_widget(self.screens.current_screen)
+        
+    def add_results_screen(self):
+        game_results = []
+        for game_board_screen in self.finished_screens:
+            game_result = GameResult(game_board_screen, orientation='horizontal', size_hint=(1, None), height=50)
+            game_results.append(game_result)
+        content = StackLayout(orientation='lr-tb', size_hint=(1, 1))
+        label = Label(text='RESULTS', size_hint=(1, None), height=100)
+        content.add_widget(label)
+        for game_result in game_results:
+            content.add_widget(game_result)
+        scroller = ScrollView(size_hint=(1, 1))
+        scroller.add_widget(content)
+        results_screen = ResultsScreen(scroller, name='Results')
+        self.screens.add_widget(results_screen)
     
     @property
     def default_font_name(self):
