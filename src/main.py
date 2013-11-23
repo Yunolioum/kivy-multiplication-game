@@ -7,8 +7,10 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.boxlayout import BoxLayout
 
-class Numpad(Widget):
+class Numpad(GridLayout):
     def __init__(self, **kwargs):
         super(Numpad, self).__init__(**kwargs)
         self.register_event_type('on_new_number')
@@ -90,11 +92,8 @@ class NumericTextInput(TextInput):
     def on_erase_number(self):
         pass
 
-class GameBoard(Screen):
-    operand1 = NumericProperty(0)
-    operand2 = NumericProperty(0)
-    
-    correct_answer = 0
+class GameBoard(Screen, BoxLayout):
+    equation_widget = ObjectProperty(None)
     
     _current_guess = StringProperty('')
     
@@ -107,6 +106,11 @@ class GameBoard(Screen):
     
     numpad = ObjectProperty(None)
     
+    @property
+    def correct_answer(self):
+        if self.equation_widget is None:
+            return -1
+        return int(self.equation_widget.operand1.text) * int(self.equation_widget.operand2.text)
     def __init__(self, **kwargs):
         super(GameBoard, self).__init__(**kwargs)
         self.success_dependant_graphics.new_game_button.bind(
@@ -165,11 +169,6 @@ class GameBoard(Screen):
     def new_game(self):
         self.input_is_correct = False
         
-        self.operand1 = randint(1,12)
-        self.operand2 = randint(1,12)
-        
-        self.correct_answer = self.operand1 * self.operand2
-        
         self.success_dependant_graphics.hide()
         self.success_dependant_graphics.on_new_game()
         
@@ -178,10 +177,21 @@ class GameBoard(Screen):
         self.input.focus = True
         
 class MultiplicationGameApp(App):
-    NUMBER_OF_GAMES = 5
+    NUMBER_OF_GAMES = 1
+    OPERAND_MAX = 12
+    OPERAND_MIN = 1
+    FONT_NAME = 'fonts/Scratch.ttf'
+    
+    def randomize_operand(self):
+        return randint(self.OPERAND_MIN, self.OPERAND_MAX)
+    
+    @property
+    def default_font_name(self):
+        return self.FONT_NAME
+    
     def build(self):
         screens = ScreenManager()
-        for i in range(1, self.NUMBER_OF_GAMES):
+        for i in range(0, self.NUMBER_OF_GAMES):
             screens.add_widget(GameBoard(name='Game %d' % i))
         return screens
 
