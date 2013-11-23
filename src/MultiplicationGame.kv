@@ -10,7 +10,6 @@
     numpad: content_box.number_buttons
     equation_widget: content_box.equation
     
-    
     SuccessDependantGraphics:
         id: time_and_again_button
         center_y: self.position_y_multiplier * (root.center_y + root.height / 4)
@@ -36,12 +35,21 @@
         
         GridLayout: 
             id: equation
+            height: 200
+            size_hint: (1, .2)
             operand1: operand_left
             operand2: operand_right
-            cols: 3
-            padding: 20
+            cols: 5
+            
+            Label:
+                id: empty_left
+                size_hint: (1, 1)
+                
             Label:
                 id: operand_left
+                width: 100
+                height: 100
+                size_hint: (None, 1)
                 font_size: 70
                 font_name: app.default_font_name
                 halign: 'right'
@@ -49,6 +57,9 @@
             
             Label:
                 id: operator
+                size_hint: (None, 1)
+                width: 20
+                height: 20
                 font_size: 70
                 font_name: app.default_font_name
                 halign: 'center'
@@ -56,19 +67,29 @@
                 
             Label:
                 id: operand_right
+                size_hint: (None, 1)
+                width: 100
+                height: 100
                 font_size: 70
                 font_name: app.default_font_name
                 halign: 'left'
                 text: str(app.randomize_operand())
+                
+            Label:
+                id: empty_right
+                size_hint: (1, 1)
             
         Label:
             id: answer_presentation
+            height: 100
+            size_hint: (1, None)
             font_name: app.default_font_name
             font_size: 40
             text: str(root._current_guess)
             
         GridLayout:
             id: number_buttons
+            size_hint: (1, 1)
             #Paint it red so we know where it is...
             canvas.before:
                 Color:
