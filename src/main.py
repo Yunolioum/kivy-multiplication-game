@@ -87,8 +87,6 @@ class GameBoard(Screen):
         super(GameBoard, self).__init__(**kwargs)
         self.register_event_type('on_numpad_new_number')
         self.register_event_type('on_numpad_erase_number')
-        self.success_dependant_graphics.new_game_button.bind(
-                on_press=self.on_new_game_button_clicked)
         self.input.bind(on_new_number=self.on_new_number)
         self.input.bind(on_erase_number=self.on_erase_number)
         self.input.bind(on_enter=self.on_enter_key)
@@ -142,12 +140,6 @@ class GameBoard(Screen):
         self.success_dependant_graphics.on_success()
         self.success_dependant_graphics.show()
         
-    def on_new_game_button_clicked(self, instance):
-        if not self.input_is_correct:
-            raise RuntimeError("Tried to start a new game with an incorrect answer")
-        else:
-            self.new_game()
-        
     def on_fail(self):
         self.input_is_correct = False
         
@@ -166,7 +158,7 @@ class GameBoard(Screen):
         self.input.focus = True
         
 class MultiplicationGameApp(App):
-    NUMBER_OF_GAMES = 1
+    NUMBER_OF_GAMES = 5
     OPERAND_MAX = 12
     OPERAND_MIN = 1
     FONT_NAME = 'fonts/Scratch.ttf'
@@ -174,15 +166,21 @@ class MultiplicationGameApp(App):
     def randomize_operand(self):
         return randint(self.OPERAND_MIN, self.OPERAND_MAX)
     
+    def next_game(self):
+        if not self.screens.current_screen.input_is_correct:
+            raise RuntimeError("Tried to start a new game with an incorrect answer")
+        else:
+            self.screens.current = self.screens.next()
+    
     @property
     def default_font_name(self):
         return self.FONT_NAME
     
     def build(self):
-        screens = ScreenManager()
+        self.screens = ScreenManager()
         for i in range(0, self.NUMBER_OF_GAMES):
-            screens.add_widget(GameBoard(name='Game %d' % i))
-        return screens
+            self.screens.add_widget(GameBoard(name='Game %d' % i))
+        return self.screens
 
 if __name__ == '__main__':
     MultiplicationGameApp().run()

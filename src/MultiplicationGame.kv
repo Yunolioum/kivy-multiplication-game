@@ -152,7 +152,6 @@
                 on_press: root.erase_pressed(self)
             
 <SuccessDependantGraphics>:
-    new_game_button: button
     orientation: 'vertical'
     
     Label:
@@ -171,6 +170,7 @@
         font_size: 20
         height: 100
         size_hint: (1, None)
+        on_press: app.next_game()
         
 <NumButton@Button>:
     font_name: 'fonts/Scratch.ttf'
