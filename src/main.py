@@ -4,31 +4,8 @@ import time
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
 from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.boxlayout import BoxLayout
-
-class Numpad(GridLayout):
-    def __init__(self, **kwargs):
-        super(Numpad, self).__init__(**kwargs)
-        self.register_event_type('on_new_number')
-        self.register_event_type('on_erase_number')
-    
-    def numbutton_pressed(self, instance, value):
-        self.dispatch('on_new_number', int(value))
-        
-    def erase_pressed(self, instance):
-        self.dispatch('on_erase_number')
-        
-    def on_new_number(self, number):
-        pass
-    def on_erase_number(self):
-        pass
-
-class NumButton(Button):
-    pass
 
 class SuccessDependantGraphics(Widget):
     time_to_solve = StringProperty('')
@@ -92,7 +69,7 @@ class NumericTextInput(TextInput):
     def on_erase_number(self):
         pass
 
-class GameBoard(Screen, BoxLayout):
+class GameBoard(Screen):
     equation_widget = ObjectProperty(None)
     
     _current_guess = StringProperty('')
@@ -106,20 +83,32 @@ class GameBoard(Screen, BoxLayout):
     
     numpad = ObjectProperty(None)
     
+    def __init__(self, **kwargs):
+        super(GameBoard, self).__init__(**kwargs)
+        self.register_event_type('on_numpad_new_number')
+        self.register_event_type('on_numpad_erase_number')
+        self.success_dependant_graphics.new_game_button.bind(
+                on_press=self.on_new_game_button_clicked)
+        self.input.bind(on_new_number=self.on_new_number)
+        self.input.bind(on_erase_number=self.on_erase_number)
+        self.input.bind(on_enter=self.on_enter_key)
+        self.bind(on_numpad_new_number=self.on_new_number)
+        self.bind(on_numpad_erase_number=self.on_erase_number)
+    
+    def numbutton_pressed(self, instance, value):
+        self.dispatch('on_numpad_new_number', int(value))
+    def erase_pressed(self, instance):
+        self.dispatch('on_numpad_erase_number')
+    def on_numpad_new_number(self, number):
+        pass
+    def on_numpad_erase_number(self):
+        pass
+    
     @property
     def correct_answer(self):
         if self.equation_widget is None:
             return -1
         return int(self.equation_widget.operand1.text) * int(self.equation_widget.operand2.text)
-    def __init__(self, **kwargs):
-        super(GameBoard, self).__init__(**kwargs)
-        self.success_dependant_graphics.new_game_button.bind(
-                on_press=self.on_new_game_button_clicked)
-        self.numpad.bind(on_new_number=self.on_appended_number)
-        self.numpad.bind(on_erase_number=self.on_erase_number)
-        self.input.bind(on_new_number=self.on_appended_number)
-        self.input.bind(on_erase_number=self.on_erase_number)
-        self.input.bind(on_enter=self.on_enter_key)
         
     def on_pre_enter(self):
         self.new_game()
@@ -135,7 +124,7 @@ class GameBoard(Screen, BoxLayout):
         if not self._current_guess == str(self.correct_answer):
             self._current_guess = new_text
             self.on_guess()
-    def on_appended_number(self, instance, number):
+    def on_new_number(self, instance, number):
         self.current_guess += str(number)
     def on_erase_number(self, instance):
         if len(self.current_guess) > 0:
