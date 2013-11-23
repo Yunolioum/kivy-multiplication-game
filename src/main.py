@@ -3,7 +3,8 @@ import time
 
 from kivy.app import App
 from kivy.uix.textinput import TextInput
-from kivy.properties import NumericProperty, ObjectProperty, BooleanProperty, StringProperty
+from kivy.properties import NumericProperty, ObjectProperty, \
+        BooleanProperty, StringProperty
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -218,7 +219,12 @@ class MultiplicationGameApp(App):
     def add_results_screen(self):
         game_results = []
         for game_board_screen in self.finished_screens:
-            game_result = GameResult(game_board_screen, orientation='horizontal', size_hint=(1, None), height=50)
+            game_result = GameResult(
+                    game_board_screen,
+                    orientation='horizontal',
+                    size_hint=(1, None),
+                    height=50
+            )
             game_results.append(game_result)
         content = StackLayout(orientation='lr-tb', size_hint=(1, 1))
         label = Label(text='RESULTS', size_hint=(1, None), height=100)

@@ -92,65 +92,69 @@
             font_size: 40
             text: str(root._current_guess)
             
-        GridLayout:
-            id: number_buttons
-            size_hint: (1, 1)
-            #Paint it red so we know where it is...
-            canvas.before:
-                Color:
-                    rgba: 1, 0, 0, 0.3 #red
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
-                    
-            cols: 3
-            
-            NumButton:
-                id: num_1
-                text: '1'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_2
-                text: '2'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_3
-                text: '3'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_4
-                text: '4'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_5
-                text: '5'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_6
-                text: '6'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_7
-                text: '7'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_8
-                text: '8'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: num_9
-                text: '9'
-                on_press: root.numbutton_pressed(self, self.text)
+        BoxLayout:
+            number_buttons: number_buttons
             Label:
-                id: num_empty_0
-            NumButton:
-                id: num_0
-                text: '0'
-                on_press: root.numbutton_pressed(self, self.text)
-            NumButton:
-                id: erase
-                text: 'X'
-                on_press: root.erase_pressed(self)
+                id: empty_left
+                size_hint: (0.5, 1)
+                
+            GridLayout:
+                id: number_buttons
+                size_hint: (None, None)
+                width: 300
+                height: 400
+                        
+                cols: 3
+                
+                NumButton:
+                    id: num_1
+                    text: '1'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_2
+                    text: '2'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_3
+                    text: '3'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_4
+                    text: '4'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_5
+                    text: '5'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_6
+                    text: '6'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_7
+                    text: '7'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_8
+                    text: '8'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: num_9
+                    text: '9'
+                    on_press: root.numbutton_pressed(self, self.text)
+                Label:
+                    id: num_empty_0
+                NumButton:
+                    id: num_0
+                    text: '0'
+                    on_press: root.numbutton_pressed(self, self.text)
+                NumButton:
+                    id: erase
+                    text: 'X'
+                    on_press: root.erase_pressed(self)
+            Label:
+                id: empty_right
+                size_hint: (0.5, 1)
             
 <SuccessDependantGraphics>:
     orientation: 'vertical'
@@ -179,44 +183,4 @@
     background_normal: 'images/button-normal-black.png'
     background_down: 'images/button-pressed-black.png'
     halign: 'center'
-    size_hint: (None, None)
-
-<GameResults>:
-    canvas.before:
-        Color:
-            rgba: 1, 1, 0, 0.3 #yellow
-        Rectangle:
-            pos: self.pos
-            size: self.size
-    orientation: 'horizontal'
-    size_hint: (1, 0.1)
-    Label:
-        id: empty_left
-        size_hint: (0.4, None)
-    Label:
-        id: equation
-        width: 100
-        height: 50
-        halign: 'right'
-        size_hint: (0.1, None)
-        font_name: app.default_font_name
-        text: root.equation_label
-    Label:
-        id: separator
-        height: 50
-        width: 30
-        halign: 'center'
-        size_hint: (0.06, None)
-        font_name: app.default_font_name
-        text: ':'
-    Label:
-        id: time
-        width: 100
-        height: 50
-        halign: 'left'
-        size_hint: (0.1, None)
-        font_name: app.default_font_name
-        text: root.time_label
-    Label:
-        size_hint: (0.4, None)
-        id: empty_right
+    size_hint: (1, 1)
